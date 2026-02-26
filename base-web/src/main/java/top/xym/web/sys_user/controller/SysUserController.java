@@ -23,30 +23,24 @@ public class SysUserController {
     @PostMapping
     @Operation(summary = "新增用户")
     public ResultVo<?> add(@RequestBody SysUser sysUser) {
-        if (sysUserService.save(sysUser)) {
-            return ResultUtils.success("新增成功!");
-        }
-        return ResultUtils.error("新增失败");
+        sysUserService.saveUser(sysUser);
+        return ResultUtils.success("新增成功！");
     }
 
     //编辑
     @PutMapping
     @Operation(summary = "编辑用户")
     public ResultVo<?> edit(@RequestBody SysUser sysUser) {
-        if (sysUserService.updateById(sysUser)) {
-            return ResultUtils.success("编辑成功!");
-        }
-        return ResultUtils.error("编辑失败");
+        sysUserService.editUser(sysUser);
+        return ResultUtils.success("编辑成功！");
     }
 
     //删除
     @DeleteMapping("/{userId}")
     @Operation(summary = "删除用户")
     public ResultVo<?> delete(@PathVariable("userId") Long userId) {
-        if (sysUserService.removeById(userId)) {
-            return ResultUtils.success("删除成功！");
-        }
-        return ResultUtils.error("删除失败");
+        sysUserService.deleteUser(userId);
+        return ResultUtils.success("删除成功!");
     }
 
     // 列表
