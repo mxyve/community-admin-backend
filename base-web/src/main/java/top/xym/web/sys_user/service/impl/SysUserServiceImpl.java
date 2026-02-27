@@ -24,13 +24,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public void saveUser(SysUser sysUser) {
         int i = this.baseMapper.insert(sysUser);
-        // 新增用户成功活，设置用户的角色
+        // 新增用户成功后，设置用户的角色
         if (i > 0) {
             // 把前端逗号分隔的字符串转为数组
             String[] split = sysUser.getRoleId().split(",");
             if (split.length > 0) {
                 List<SysUserRole> roles = new ArrayList<>();
                 for (String s : split) {
+                    // 跳过空字符串
+                    if (s == null || s.trim().isEmpty()) {
+                        continue;
+                    }
                     SysUserRole userRole = new SysUserRole();
                     userRole.setUserId(sysUser.getUserId());
                     userRole.setRoleId(Long.parseLong(s));
@@ -60,6 +64,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             if (split.length > 0) {
                 List<SysUserRole> roles = new ArrayList<>();
                 for (String s : split) {
+                    // 跳过空字符串
+                    if (s == null || s.trim().isEmpty()) {
+                        continue;
+                    }
                     SysUserRole userRole = new SysUserRole();
                     userRole.setUserId(sysUser.getUserId());
                     userRole.setRoleId(Long.parseLong(s));
