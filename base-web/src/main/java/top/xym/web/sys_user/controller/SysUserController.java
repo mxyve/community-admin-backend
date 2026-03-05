@@ -16,10 +16,7 @@ import top.xym.result.ResultVo;
 import top.xym.utils.ResultUtils;
 import top.xym.web.sys_menu.entity.AssignTreeParm;
 import top.xym.web.sys_menu.entity.AssignTreeVo;
-import top.xym.web.sys_user.entity.LoginParm;
-import top.xym.web.sys_user.entity.LoginVo;
-import top.xym.web.sys_user.entity.SysUser;
-import top.xym.web.sys_user.entity.SysUserPage;
+import top.xym.web.sys_user.entity.*;
 import top.xym.web.sys_user.service.SysUserService;
 import top.xym.web.sys_user_role.entity.SysUserRole;
 import top.xym.web.sys_user_role.service.SysUserRoleService;
@@ -187,5 +184,24 @@ public class SysUserController {
     public ResultVo<?> getAssignTree(@RequestBody AssignTreeParm parm) {
         AssignTreeVo assignTree = sysUserService.getAssignTree(parm);
         return ResultUtils.success("查询成功", assignTree);
+    }
+
+    // 修改密码
+    @PostMapping("/updatePassword")
+    @Operation(summary = "修改密码")
+    public ResultVo<?> updatePassword(@RequestBody UpdatePasswordParm parm) {
+        SysUser user = sysUserService.getById(parm.getUserId());
+        if (!parm.getOldPassword().equals(user.getPassword())){
+            return ResultUtils.error("原密码不正确！");
+        }
+        // 更新条件
+        UpdateWrapper<SysUser> query = new UpdateWrapper<>();
+        query.lambda().set(SysUser::getPassword,parm.getPassword())
+                .eq(SysUser::getUserId,parm.getUserId());
+        if(sysUserService.update(query)) {
+            return ResultUtils.success("密码修改成功!");
+        }
+        return ResultUtils.error("密码修改失败！");
+
     }
 }
