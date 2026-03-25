@@ -34,4 +34,7 @@ public class SysUser {
     // 不属于用户表的字段，需要排除
     @TableField(exist = false)
     private String roleId;
+
+    // 租户Id
+    private Long tenantId;
 }
