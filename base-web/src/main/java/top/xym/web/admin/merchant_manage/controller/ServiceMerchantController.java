@@ -52,7 +52,7 @@ public class ServiceMerchantController {
 
     // 更新租户状态接口
     @PutMapping("/status")
-    @Operation(summary = "更新租户状态")
+    @Operation(summary = "更新租户审核状态")
     public ResultVo<?> updateStatus(@RequestBody StatusUpdateDto request) {
         serviceMerchantService.updateStatus(request.getId(), request.getApplyStatus(), request.getApplyDesc());
         return ResultUtils.success("更新成功");

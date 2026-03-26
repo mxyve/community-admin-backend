@@ -33,8 +33,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public List<SysMenu> getMenuByUserId(Long userId) {
-        return this.baseMapper.getMenuByUserId(userId);
+        // 1. 查询菜单
+        List<SysMenu> menuList = this.baseMapper.getMenuByUserId(userId);
+        // 2. 组装成树形（必须加！）
+        return MakeMenuTree.makeTree(menuList, 0L);
     }
+
 
     @Override
     public List<SysMenu> getMenuByRoleId(Long roleId) {

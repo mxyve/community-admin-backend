@@ -18,5 +18,6 @@
              sys_menu AS m
         WHERE rm.menu_id = m.menu_id
           AND rm.role_id = #{roleId}
+          AND rm.deleted = 0
     </select>
 </mapper>

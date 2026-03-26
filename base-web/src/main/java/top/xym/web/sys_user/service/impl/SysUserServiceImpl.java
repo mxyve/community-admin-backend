@@ -120,6 +120,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .filter(Objects::nonNull)
                 .forEach(item -> {
                     ids.add(item.getMenuId());
+
                 });
         // 组装返回数据
         AssignTreeVo vo = new AssignTreeVo();
