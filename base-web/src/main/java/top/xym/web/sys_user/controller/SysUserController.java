@@ -12,9 +12,12 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.bind.annotation.*;
-import top.xym.jwt.JwtUtils;
+import top.xym.cache.RedisCache;
+import top.xym.cache.RedisKeys;
 import top.xym.result.ResultVo;
+import top.xym.utils.JwtUtils;
 import top.xym.utils.ResultUtils;
+import top.xym.utils.SecurityUtils;
 import top.xym.web.sys_menu.entity.AssignTreeParm;
 import top.xym.web.sys_menu.entity.AssignTreeVo;
 import top.xym.web.sys_menu.entity.SysMenu;
@@ -32,6 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RequestMapping("/api/sysUser")
 @RestController
@@ -42,6 +46,7 @@ public class SysUserController {
     private final DefaultKaptcha defaultKaptcha;
     private final JwtUtils jwtUtils;
     private final SysMenuService sysMenuService;
+    private final RedisCache redisCache;
 
     //新增
     @PostMapping
@@ -179,9 +184,10 @@ public class SysUserController {
         vo.setUserId(one.getUserId());
         vo.setNickName(one.getNickName());
         //生成token
-        Map<String,String> map = new HashMap<>();
-        map.put("userId",Long.toString(one.getUserId()));
-        String token = jwtUtils.generateToken(map);
+        String token = jwtUtils.generateToken(one.getUserId());
+        // 把 token 存入 Redis
+        String tokenKey = RedisKeys.getUserTokenKey(one.getUserId());
+        redisCache.set(tokenKey, token, jwtUtils.getExpiration(token) / 1000, TimeUnit.SECONDS);
         vo.setToken(token);
         return ResultUtils.success("登录成功!", vo);
     }
@@ -216,7 +222,9 @@ public class SysUserController {
     // 获取用户信息
     @GetMapping("/getInfo")
     @Operation(summary = "获取用户信息")
-    public ResultVo<?> getInfo(Long userId) {
+    public ResultVo<?> getInfo() {
+        // 直接从当前登录信息拿！不用前端传参
+        Long userId = SecurityUtils.getCurrentUserId();
         // 根据id查询用户信息
         SysUser user = sysUserService.getById(userId);
         List<SysMenu> menuList;

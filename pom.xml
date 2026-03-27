@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>3.2.5</version>
         <relativePath/>
     </parent>
 
@@ -23,11 +23,12 @@
     </modules>
 
     <properties>
+        <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <lombok-version>1.18.32</lombok-version>
+        <lombok.version>1.18.32</lombok.version>
         <mysql.version>8.3.0</mysql.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <druid.version>1.2.19</druid.version>
@@ -37,7 +38,7 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.16.1</commons-io.version>
         <knife4j.version>4.5.0</knife4j.version>
-        <jwt.version>4.4.0</jwt.version>
+        <jjwt.version>0.12.6</jjwt.version>
     </properties>
 
     <dependencyManagement>
@@ -46,7 +47,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok-version}</version>
+                <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -112,12 +113,12 @@
                 <version>${knife4j.version}</version>
             </dependency>
 
-            <!-- jwt -->
             <dependency>
-                <groupId>com.auth0</groupId>
-                <artifactId>java-jwt</artifactId>
-                <version>${jwt.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>3.5.7</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

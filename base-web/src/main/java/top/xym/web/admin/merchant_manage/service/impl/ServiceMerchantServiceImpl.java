@@ -33,16 +33,16 @@ public class ServiceMerchantServiceImpl extends ServiceImpl<ServiceMerchantMappe
         merchant.setDeleted(0);
         this.baseMapper.insert(merchant);
 
-//        // 2.自动创建租户管理员账号（sys_user）
-//        SysUser user = new SysUser();
-//        user.setUsername(merchant.getContactPhone());
-//        user.setPassword("123456");
-//        user.setPhone(merchant.getContactPhone());
-//        user.setNickName(merchant.getContactPerson());
-//        user.setEmail(merchant.getEmail());
-//        // 绑定租户ID
-//        user.setTenantId(merchant.getId());
-//        sysUserService.save(user);
+        // 2.自动创建租户管理员账号（sys_user）
+        SysUser user = new SysUser();
+        user.setUsername(merchant.getContactPhone());
+        user.setPassword("123456");
+        user.setPhone(merchant.getContactPhone());
+        user.setNickName(merchant.getContactPerson());
+        user.setEmail(merchant.getEmail());
+        // 绑定租户ID
+        user.setTenantId(merchant.getId());
+        sysUserService.save(user);
     }
 
     // 租户管理-分页查询
