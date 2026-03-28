@@ -70,7 +70,7 @@ public class Services {
     // 审核不通过原因
     private String auditReason;
     // 审核时间
-    private Date auditTime;
+    private LocalDateTime auditTime;
     // 审核人ID（关联 sys_user）
     private Long auditorId;
     @TableLogic
