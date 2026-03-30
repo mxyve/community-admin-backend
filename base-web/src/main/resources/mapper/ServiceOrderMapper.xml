@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.xym.web.shop.order.mapper.ServiceOrderMapper">
+
+
+<select id="selectPageVo" resultType="top.xym.web.shop.order.entity.ServiceOrder">
+    SELECT
+    o.*,
+    s.name AS serviceTitle,
+    u.phone AS userMobile,
+    u.nick_name AS userName,
+    st.name AS staffName
+    FROM service_orders o
+    LEFT JOIN services s ON o.service_id = s.id
+    LEFT JOIN sys_user u ON o.user_id = u.user_id
+    LEFT JOIN service_staff st ON o.staff_id = st.id
+    <where>
+        ${ew.sqlSegment}
+    </where>
+</select>
+
+</mapper>

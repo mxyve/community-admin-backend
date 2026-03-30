@@ -34,7 +34,7 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       # 扫描 controller 包的路径
-      packages-to-scan: top.xym.web.sys_role.controller,top.xym.web.sys_user.controller,top.xym.web.sys_menu.controller,top.xym.web.admin.merchant_manage.controller,top.xym.web.shop.service.controller,top.xym.web.admin.service.controller
+      packages-to-scan: top.xym.web.sys_role.controller,top.xym.web.sys_user.controller,top.xym.web.sys_menu.controller,top.xym.web.admin.merchant_manage.controller,top.xym.web.shop.service.controller,top.xym.web.admin.service.controller,top.xym.web.shop.order.controller
 
 # knife4j
 knife4j:
