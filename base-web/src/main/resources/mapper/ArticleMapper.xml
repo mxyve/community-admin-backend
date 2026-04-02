@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.xym.web.admin.community.mapper.ArticleMapper">
+
+    <!-- 分页查询文章列表（带用户名） -->
+    <select id="selectArticlePage" resultType="top.xym.web.admin.community.entity.ArticleVO">
+        SELECT a.*, u.username, u.nick_name
+        FROM t_article a
+        LEFT JOIN sys_user u ON a.user_id = u.user_id
+        WHERE a.deleted = 0
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''">
+            AND ${ew.sqlSegment}
+        </if>
+    </select>
+
+    <!-- 查询文章列表（带用户名） -->
+    <select id="selectArticleList" resultType="top.xym.web.admin.community.entity.ArticleVO">
+        SELECT a.*, u.username, u.nick_name
+        FROM t_article a
+        LEFT JOIN sys_user u ON a.user_id = u.user_id
+        WHERE a.deleted = 0
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''">
+            AND ${ew.sqlSegment}
+        </if>
+    </select>
+
+    <!-- 查询文章详情（带用户名） -->
+    <select id="selectArticleDetail" resultType="top.xym.web.admin.community.entity.ArticleVO">
+        SELECT a.*, u.username
+        FROM t_article a
+                 LEFT JOIN sys_user u ON a.user_id = u.user_id
+        WHERE a.article_id = #{articleId}
+    </select>
+
+</mapper>

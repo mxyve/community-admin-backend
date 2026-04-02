@@ -229,15 +229,15 @@ public class SysUserController {
         SysUser user = sysUserService.getById(userId);
         List<SysMenu> menuList;
         // 判断是否是超级管理员
-        if (StringUtils.isNotEmpty(user.getIsAdmin()) && "1".equals(user.getIsAdmin())) {
-            // 超级管理员，直接全部查询
-            menuList = sysMenuService.list();
-        } else {
+//        if (StringUtils.isNotEmpty(user.getIsAdmin()) && "1".equals(user.getIsAdmin())) {
+//            // 超级管理员，直接全部查询
+//            menuList = sysMenuService.list();
+//        } else {
             // 1. 查询用户拥有的角色
             Long roleIds = sysUserRoleService.getRoleIdsByUserId(userId);
             // 2. 根据角色查询菜单（真正正确的权限）
             menuList = sysMenuService.getMenuByRoleId(roleIds);
-        }
+//        }
         // 获取菜单表的code字段
         List<String> collect = Optional.ofNullable(menuList).orElse(new ArrayList<>())
                 .stream()

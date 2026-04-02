@@ -1,6 +1,8 @@
 package top.xym.web.admin.community.entity;
 
+
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -11,10 +13,10 @@ import java.time.LocalDateTime;
 @TableName("t_article")
 public class Article {
 
-    @TableId(value = "article_id", type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     private Integer articleId;
 
-    private Integer userId;
+    private Long userId;
 
     private Integer tagId;
 
@@ -24,6 +26,7 @@ public class Article {
 
     private String img;
 
+    // 0：审核不通过 1：审核通过 2：审核中
     private Integer status;
 
     private Long viewCount;
@@ -43,4 +46,5 @@ public class Article {
     private LocalDateTime updateTime;
 
     private Integer deleted;
+
 }
