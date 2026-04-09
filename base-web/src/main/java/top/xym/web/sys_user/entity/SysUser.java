@@ -13,10 +13,16 @@ public class SysUser {
     private String username;
     private String password;
     private String nickName;
+    private String avatar;
     private String phone;
     private String email;
     private String gender;
     private String isAdmin;
+    private String province;
+    private String city;
+    private String district;
+    // 租户Id
+    private Long tenantId;
     // 账户是否过期（1 未过期，0已过期）
     private boolean isAccountNonExpired = true;
     // 账户是否被锁定（1 未锁定，0已锁定）
@@ -34,7 +40,4 @@ public class SysUser {
     // 不属于用户表的字段，需要排除
     @TableField(exist = false)
     private String roleId;
-
-    // 租户Id
-    private Long tenantId;
 }

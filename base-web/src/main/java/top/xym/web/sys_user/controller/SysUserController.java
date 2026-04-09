@@ -86,6 +86,21 @@ public class SysUserController {
         if (StringUtils.isNotEmpty(parm.getPhone())) {
             query.lambda().like(SysUser::getPhone, parm.getPhone());
         }
+        String userType = parm.getUserType();
+        if (StringUtils.isNotEmpty(userType)) {
+            if ("admin".equals(userType)) {
+                // 1、超管：is_admin = 1
+                query.lambda().eq(SysUser::getIsAdmin, "1");
+            } else if ("user".equals(userType)) {
+                // 2、普通用户：tenant_id为空 且 is_admin为空
+                query.lambda().isNull(SysUser::getTenantId)
+                        .and(w -> w.isNull(SysUser::getIsAdmin).or().eq(SysUser::getIsAdmin, ""));
+            } else if ("merchant".equals(userType)) {
+                // 3、商家：tenant_id 有值（不为null、不为0）
+                query.lambda().isNotNull(SysUser::getTenantId)
+                        .ne(SysUser::getTenantId, 0);
+            }
+        }
         query.lambda().orderByDesc(SysUser::getCreateTime);
         // 查询列表
         IPage<SysUser> list = sysUserService.page(page, query);

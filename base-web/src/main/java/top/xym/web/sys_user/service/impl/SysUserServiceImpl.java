@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -112,6 +113,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         } else {
             menuList = sysMenuService.getMenuByUserId(parm.getUserId());
         }
+        // 组装树形结构（核心修改）
+        List<SysMenu> treeMenu = buildTreeMenu(menuList);
+
         // 查询角色原来的菜单
         List<SysMenu> roleList = sysMenuService.getMenuByRoleId(parm.getRoleId());
         List<Long> ids = new ArrayList<>();
@@ -125,8 +129,37 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 组装返回数据
         AssignTreeVo vo = new AssignTreeVo();
         vo.setCheckList(ids.toArray());
-        vo.setMenuList(menuList);
+        vo.setMenuList(treeMenu);
         return vo;
+    }
+    // 递归组装树形菜单的方法
+    private List<SysMenu> buildTreeMenu(List<SysMenu> menuList) {
+        // 1. 找到所有一级菜单（parentId = 0）
+        List<SysMenu> rootMenu = menuList.stream()
+                .filter(menu -> menu.getParentId() == 0)
+                .collect(Collectors.toList());
+
+        // 2. 为每个一级菜单递归设置子菜单
+        rootMenu.forEach(root -> {
+            List<SysMenu> children = getChildren(root.getMenuId(), menuList);
+            root.setChildren(children);
+        });
+
+        return rootMenu;
+    }
+
+    // 递归获取子菜单
+    private List<SysMenu> getChildren(Long parentId, List<SysMenu> allMenu) {
+        List<SysMenu> childrenList = allMenu.stream()
+                .filter(menu -> parentId.equals(menu.getParentId()))
+                .collect(Collectors.toList());
+
+        // 递归为子菜单设置子菜单
+        childrenList.forEach(child -> {
+            child.setChildren(getChildren(child.getMenuId(), allMenu));
+        });
+
+        return childrenList;
     }
 
 }
