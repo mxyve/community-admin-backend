@@ -78,6 +78,8 @@ public class SecurityConfig {
                         // 放行登录接口
                         .requestMatchers("/api/sysUser/login").permitAll()
                         .requestMatchers("/api/serviceMerchant/apply").permitAll()
+                        .requestMatchers("/api/serviceMerchant/idCard").permitAll()
+                        .requestMatchers("/api/serviceMerchant/businessLicense").permitAll()
                         .requestMatchers("/api/sysUser/getImage").permitAll()
                         // AI 流式接口 + RAG 接口全部放行
                         .requestMatchers("/api/rag/**").permitAll()

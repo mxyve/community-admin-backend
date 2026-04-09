@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.xym.web.admin.merchant_manage.entity.MerchantPageParm;
@@ -23,25 +24,37 @@ public class ServiceMerchantServiceImpl extends ServiceImpl<ServiceMerchantMappe
 
     private final SysUserService sysUserService;
 
+    // 密码加密（SpringSecurity 加密方式，明文密码 → BCrypt 加密）
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     // 商家入驻申请
     @Transactional
     @Override
     public void applyMerchant(ServiceMerchant merchant) {
         // 1.插入商家信息，状态默认待审核 0
+        String merchantCode = "M" + System.currentTimeMillis() + (int)(Math.random() * 900 + 100);
+        merchant.setMerchantCode(merchantCode);
         merchant.setApplyStatus(0);
+        // 3=待审核（营业状态）
+        // merchant.setStatus(3);
         merchant.setApplyTime(new Date());
         merchant.setDeleted(0);
+        // 默认服务0次
+        merchant.setServiceCount(0);
+        // 默认响应时间10分钟
+        merchant.setResponseTime(10);
         this.baseMapper.insert(merchant);
 
         // 2.自动创建租户管理员账号（sys_user）
         SysUser user = new SysUser();
         user.setUsername(merchant.getContactPhone());
-        user.setPassword("123456");
+        user.setPassword(passwordEncoder.encode(merchant.getPassword()));
         user.setPhone(merchant.getContactPhone());
         user.setNickName(merchant.getContactPerson());
         user.setEmail(merchant.getEmail());
         // 绑定租户ID
         user.setTenantId(merchant.getId());
+        user.setDeleted(0);
         sysUserService.save(user);
     }
 
