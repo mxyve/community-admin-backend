@@ -70,6 +70,12 @@ public class ServiceMerchantServiceImpl extends ServiceImpl<ServiceMerchantMappe
         if (StringUtils.isNotEmpty(parm.getContactPhone())) {
             query.lambda().like(ServiceMerchant::getContactPhone, parm.getContactPhone());
         }
+        if (StringUtils.isNotEmpty(parm.getPackageType())) {
+            query.lambda().eq(ServiceMerchant::getPackageType, parm.getPackageType());
+        }
+        if (parm.getApplyStatus() != null) {
+            query.lambda().eq(ServiceMerchant::getApplyStatus, parm.getApplyStatus());
+        }
         query.lambda().orderByDesc(ServiceMerchant::getApplyTime);
         return this.baseMapper.selectPage(page, query);
     }

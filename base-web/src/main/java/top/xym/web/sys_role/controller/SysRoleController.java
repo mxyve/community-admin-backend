@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RequestMapping("/api/role")
 @RestController
 @AllArgsConstructor
+@Tag(name = "角色管理模块")
 public class SysRoleController {
 
     private final SysRoleService sysRoleService;

@@ -2,6 +2,7 @@ package top.xym.web.shop.order.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.util.Map;
 @RequestMapping("/api/tenant/order")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "shop服务订单管理模块")
 public class ServiceOrderController {
 
     private final ServiceOrderService orderService;

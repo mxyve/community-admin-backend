@@ -49,7 +49,7 @@ public class Services {
     private BigDecimal ratingScore;
     // 评价人数
     private Integer ratingCount;
-    // 服务范围（JSON）
+    // 服务范围（JSON，如：["滨江区","西湖区"]）
     private String serviceArea;
     // 是否热门
     private Integer isHot;
@@ -57,14 +57,6 @@ public class Services {
     private Integer isRecommend;
     // 上下架状态：1上架 0下架
     private Integer status;
-    // 省
-    private String province;
-    // 市
-    private String city;
-    // 区
-    private String district;
-    // 详细地址
-    private String addressDetail;
     // 审核状态：0待审核 1审核通过 2审核不通过
     private Integer auditStatus;
     // 审核不通过原因

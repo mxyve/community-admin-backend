@@ -2,26 +2,34 @@ package top.xym.web.shop.service.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import top.xym.result.ResultVo;
 import top.xym.utils.ResultUtils;
 import top.xym.utils.SecurityUtils;
+import top.xym.web.rag.utils.AliOssUtil;
 import top.xym.web.shop.service.entity.ServicePageParm;
 import top.xym.web.shop.service.entity.Services;
 import top.xym.web.shop.service.service.ShopServiceService;
 import top.xym.web.sys_user.entity.SysUser;
 import top.xym.web.sys_user.service.SysUserService;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/tenant/service")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "shop服务管理模块")
 public class ShopServiceController {
 
     private final ShopServiceService servicesService;
     private final SysUserService sysUserService;
+
+    private final AliOssUtil aliOssUtil;
 
     private Integer getCurrentMerchantId() {
         Long userId = SecurityUtils.getCurrentUserId();
@@ -39,6 +47,30 @@ public class ShopServiceController {
     public ResultVo<?> list(@RequestBody ServicePageParm parm) {
         IPage<Services> page = servicesService.getTenantServiceList(parm, getCurrentMerchantId());
         return ResultUtils.success("查询成功", page);
+    }
+
+    /**
+     * 服务封面图上传 OSS
+     */
+    @PostMapping("/cover/upload")
+    @Operation(summary = "上传服务封面图")
+    public ResultVo<?> uploadServiceCover(@RequestParam("file") MultipartFile file) throws IOException {
+        String originalFileName = file.getOriginalFilename();
+        String fileName = "community/service/cover/" + aliOssUtil.generateUniqueFileName(originalFileName);
+        String url = aliOssUtil.upload(file.getBytes(), fileName);
+        return ResultUtils.success(url);
+    }
+
+    /**
+     * 服务轮播图上传 OSS
+     */
+    @PostMapping("/banner/upload")
+    @Operation(summary = "上传服务轮播图")
+    public ResultVo<?> uploadServiceBanner(@RequestParam("file") MultipartFile file) throws IOException {
+        String originalFileName = file.getOriginalFilename();
+        String fileName = "community/service/banner/" + aliOssUtil.generateUniqueFileName(originalFileName);
+        String url = aliOssUtil.upload(file.getBytes(), fileName);
+        return ResultUtils.success(url);
     }
 
     // 租户端-新增服务

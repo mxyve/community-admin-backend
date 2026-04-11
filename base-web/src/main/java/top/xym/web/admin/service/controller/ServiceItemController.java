@@ -2,6 +2,7 @@ package top.xym.web.admin.service.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import top.xym.result.ResultVo;
@@ -16,6 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/admin/service")
 @AllArgsConstructor
+@Tag(name = "服务项目管理模块")
 public class ServiceItemController {
 
 

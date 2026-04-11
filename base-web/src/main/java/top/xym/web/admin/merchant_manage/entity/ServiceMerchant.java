@@ -41,9 +41,9 @@ public class ServiceMerchant {
     private String intro;
     // 服务类型
     private String serviceType;
-    // 套餐类型
-    private String packageType;
     // 租户套餐类型"基础版/专业版/旗舰版"
+    private String packageType;
+    // 0  待审核， 1  审核通过（租户生效），2  审核驳回， 3  超管禁用租户
     private Integer applyStatus;
     // 综合评分
     private BigDecimal ratingScore;

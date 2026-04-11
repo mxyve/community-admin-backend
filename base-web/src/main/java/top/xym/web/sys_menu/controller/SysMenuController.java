@@ -2,6 +2,7 @@ package top.xym.web.sys_menu.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import top.xym.result.ResultVo;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/sysMenu")
 @RestController
 @AllArgsConstructor
+@Tag(name = "菜单管理模块")
 public class SysMenuController {
     private final SysMenuService sysMenuService;
 

@@ -2,6 +2,7 @@ package top.xym.web.shop.service.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import top.xym.web.sys_user.service.SysUserService;
 @RequestMapping("/api/tenant/staff")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "shop服务人员管理模块")
 public class ServiceStaffController {
 
     private final ServiceStaffService staffService;

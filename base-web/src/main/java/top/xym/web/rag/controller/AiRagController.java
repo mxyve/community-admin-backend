@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/rag/chat")
 @Slf4j
-@Tag(name = "AiRagController", description = "Rag对话接口")
+@Tag(name = "AI对话模块")
 public class AiRagController {
 
     private final ChatClient chatClient;

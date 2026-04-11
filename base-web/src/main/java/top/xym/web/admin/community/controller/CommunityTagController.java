@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/community/tag")
 @AllArgsConstructor
+@io.swagger.v3.oas.annotations.tags.Tag(name = "邻里圈文章分类管理模块")
 public class CommunityTagController {
 
     @Autowired

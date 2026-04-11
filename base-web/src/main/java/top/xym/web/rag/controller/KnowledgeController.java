@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
@@ -36,6 +37,7 @@ import static com.alibaba.fastjson2.JSON.parseArray;
 @RequestMapping("/api/rag")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "RAG知识库管理模块")
 public class KnowledgeController {
 
     private VectorStore vectorStore;

@@ -2,6 +2,7 @@ package top.xym.web.admin.merchant_manage.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/serviceMerchant")
 @AllArgsConstructor
+@Tag(name = "租户管理模块")
 public class ServiceMerchantController {
 
     private final ServiceMerchantService serviceMerchantService;
@@ -41,7 +43,7 @@ public class ServiceMerchantController {
         // 原始文件名
         String originalFileName = file.getOriginalFilename();
         // 生成唯一文件名
-        String fileName = "merchant/idCard/" + aliOssUtil.generateUniqueFileName(originalFileName);
+        String fileName = "community/merchant/idCard/" + aliOssUtil.generateUniqueFileName(originalFileName);
         // 上传OSS
         String url = aliOssUtil.upload(file.getBytes(), fileName);
         // 返回URL
@@ -57,7 +59,7 @@ public class ServiceMerchantController {
         // 原始文件名
         String originalFileName = file.getOriginalFilename();
         // 生成唯一文件名
-        String fileName = "merchant/license/" + aliOssUtil.generateUniqueFileName(originalFileName);
+        String fileName = "community/merchant/license/" + aliOssUtil.generateUniqueFileName(originalFileName);
         // 上传OSS
         String url = aliOssUtil.upload(file.getBytes(), fileName);
         // 返回URL

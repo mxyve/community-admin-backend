@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+
 import top.xym.result.Result;
 import top.xym.web.admin.community.entity.Article;
 import top.xym.web.admin.community.entity.ArticleVO;
@@ -18,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/community/article")
 @AllArgsConstructor
+@Tag(name = "邻里圈文章管理模块")
 public class ArticleController {
 
 

@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import top.xym.cache.RedisCache;
 import top.xym.cache.RedisKeys;
@@ -40,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/sysUser")
 @RestController
 @AllArgsConstructor
+@Tag(name = "用户管理模块")
 public class SysUserController {
     private final SysUserService sysUserService;
     private final SysUserRoleService sysUserRoleService;
@@ -188,12 +191,17 @@ public class SysUserController {
         }
         // 查询用户信息
         QueryWrapper<SysUser> query = new QueryWrapper<>();
-        query.lambda().eq(SysUser::getUsername, parm.getUsername())
-                .eq(SysUser::getPassword, parm.getPassword());
+        query.lambda().eq(SysUser::getUsername, parm.getUsername());
         SysUser one = sysUserService.getOne(query);
         if (one == null) {
             return ResultUtils.error("用户名或密码不正确!");
         }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (!passwordEncoder.matches(parm.getPassword(), one.getPassword())) {
+            return ResultUtils.error("用户名或密码不正确!");
+        }
+
         // 返回用户信息和token
         LoginVo vo = new LoginVo();
         vo.setUserId(one.getUserId());
