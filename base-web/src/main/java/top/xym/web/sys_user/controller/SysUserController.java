@@ -272,6 +272,7 @@ public class SysUserController {
         userInfo.setName(user.getNickName());
         userInfo.setUserId(user.getUserId());
         userInfo.setPermissions(collect.toArray());
+        userInfo.setTenantId(user.getTenantId());
         return ResultUtils.success("查询成功", userInfo);
     }
 

@@ -84,6 +84,8 @@ public class SecurityConfig {
                         // AI 流式接口 + RAG 接口全部放行
                         .requestMatchers("/api/rag/**").permitAll()
                         .requestMatchers("/api/rag/chat/rag").permitAll()
+                        .requestMatchers("/api/v1/chat/push-to-merchant").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         // 放行其他不需要登录的接口
                         .requestMatchers("/doc.html", "/webjars/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         // 其他所有接口都需要登录

@@ -7,4 +7,5 @@ public class UserInfo {
     private Long userId;
     private String name;
     private Object[] permissions;
+    private Long tenantId;
 }
