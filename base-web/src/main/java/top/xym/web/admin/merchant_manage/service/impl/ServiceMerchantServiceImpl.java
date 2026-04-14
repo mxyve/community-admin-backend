@@ -1,36 +1,70 @@
 package top.xym.web.admin.merchant_manage.service.impl;
 
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+
+import com.alipay.api.request.AlipayTradePrecreateRequest;
+import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.xym.config.AliPayConfig;
+import top.xym.result.ResultVo;
+import top.xym.utils.ResultUtils;
 import top.xym.web.admin.merchant_manage.entity.MerchantPageParm;
+import top.xym.web.admin.merchant_manage.entity.PayMerchantOrder;
 import top.xym.web.admin.merchant_manage.entity.ServiceMerchant;
+import top.xym.web.admin.merchant_manage.mapper.PayMerchantOrderMapper;
 import top.xym.web.admin.merchant_manage.mapper.ServiceMerchantMapper;
 import top.xym.web.admin.merchant_manage.service.ServiceMerchantService;
 import top.xym.web.sys_user.entity.SysUser;
 import top.xym.web.sys_user.service.SysUserService;
 
 import java.util.Date;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
 public class ServiceMerchantServiceImpl extends ServiceImpl<ServiceMerchantMapper, ServiceMerchant> implements ServiceMerchantService {
 
     private final SysUserService sysUserService;
+    private final ServiceMerchantMapper serviceMerchantMapper;
+    private final AliPayConfig aliPayConfig;
 
-    // 密码加密（SpringSecurity 加密方式，明文密码 → BCrypt 加密）
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    // 支付宝固定网关（沙箱）
+    private static final String GATEWAY = "https://openapi-sandbox.dl.alipaydev.com/gateway.do";
+    private static final String FORMAT = "JSON";
+    private static final String CHARSET = "UTF-8";
+    private static final String SIGN_TYPE = "RSA2";
+
+    private final PayMerchantOrderMapper payMerchantOrderMapper;
 
     // 商家入驻申请
     @Transactional
     @Override
     public void applyMerchant(ServiceMerchant merchant) {
+
+        // 支付校验
+        String packageType = merchant.getPackageType();
+        if ("专业版".equals(packageType) || "旗舰版".equals(packageType)) {
+            // 收费套餐必须支付成功
+            if (merchant.getPayStatus() == null || merchant.getPayStatus() != 1) {
+                throw new RuntimeException("请完成支付宝支付后再提交入驻申请");
+            }
+        } else {
+            // 基础版默认已支付
+            merchant.setPayStatus(1);
+        }
+
         // 1.插入商家信息，状态默认待审核 0
         String merchantCode = "M" + System.currentTimeMillis() + (int)(Math.random() * 900 + 100);
         merchant.setMerchantCode(merchantCode);
@@ -129,5 +163,82 @@ public class ServiceMerchantServiceImpl extends ServiceImpl<ServiceMerchantMappe
 
     }
 
-}
+    // ===================== 支付宝生成二维码（当面付-扫码支付） =====================
+    @Override
+    public ResultVo createAlipayQrCode(String packageType, String orderNo) {
+        try {
+            int amount = "专业版".equals(packageType) ? 99 : 299;
 
+            // 1. 先创建订单记录
+            PayMerchantOrder order = new PayMerchantOrder();
+            order.setOrderNo(orderNo);
+            order.setPackageType(packageType);
+            order.setAmount(String.valueOf(amount));
+            order.setPayStatus(0);
+            payMerchantOrderMapper.insert(order);
+
+            // 2. 调用支付宝生成二维码
+            AlipayClient client = new DefaultAlipayClient(
+                    GATEWAY,
+                    aliPayConfig.getAppId(),
+                    aliPayConfig.getAppPrivateKey(),
+                    FORMAT, CHARSET,
+                    aliPayConfig.getAlipayPublicKey(),
+                    SIGN_TYPE
+            );
+
+            AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
+            request.setNotifyUrl(aliPayConfig.getNotifyUrl());
+
+            String biz = String.format(
+                    "{\"out_trade_no\":\"%s\",\"total_amount\":\"%s\",\"subject\":\"%s套餐入驻\"}",
+                    orderNo, amount, packageType
+            );
+            request.setBizContent(biz);
+
+            AlipayTradePrecreateResponse response = client.execute(request);
+
+            if (response.isSuccess()) {
+                return ResultUtils.success("ok", response.getQrCode());
+            } else {
+                return ResultUtils.error("支付创建失败：" + response.getSubMsg());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtils.error("支付创建异常：" + e.getMessage());
+        }
+    }
+
+    // ===================== 支付宝支付回调 =====================
+    @Override
+    public String payNotify(HttpServletRequest request) {
+        try {
+            String outTradeNo = request.getParameter("out_trade_no");
+            String tradeStatus = request.getParameter("trade_status");
+
+            System.out.println("收到支付宝回调：outTradeNo=" + outTradeNo + ", tradeStatus=" + tradeStatus);
+
+            if ("TRADE_SUCCESS".equals(tradeStatus)) {
+                // 更新订单表支付状态
+                int result = payMerchantOrderMapper.updatePayStatus(outTradeNo);
+                System.out.println("更新订单支付状态结果：" + result);
+                return "success";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "fail";
+    }
+
+    // 查询支付状态
+    @Override
+    public ResultVo getPayStatus(String orderNo) {
+        Integer payStatus = payMerchantOrderMapper.getPayStatus(orderNo);
+        if (payStatus != null && payStatus == 1) {
+            return ResultUtils.success("已支付", true);
+        }
+        return ResultUtils.success("未支付", false);
+    }
+
+}

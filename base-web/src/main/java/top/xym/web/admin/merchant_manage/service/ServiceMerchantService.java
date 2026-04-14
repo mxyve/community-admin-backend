@@ -2,6 +2,8 @@ package top.xym.web.admin.merchant_manage.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.servlet.http.HttpServletRequest;
+import top.xym.result.ResultVo;
 import top.xym.web.admin.merchant_manage.entity.MerchantPageParm;
 import top.xym.web.admin.merchant_manage.entity.ServiceMerchant;
 
@@ -15,4 +17,12 @@ public interface ServiceMerchantService extends IService<ServiceMerchant> {
 
     // 更新租户状态
     void updateStatus(Long id, Integer applyStatus, String applyDesc);
+
+    // 支付宝支付接口
+    ResultVo createAlipayQrCode(String packageType, String orderNo);
+
+    String payNotify(HttpServletRequest request);
+
+    // 查询支付状态
+    ResultVo getPayStatus(String orderNo);
 }

@@ -3,6 +3,7 @@ package top.xym.web.admin.merchant_manage.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import top.xym.web.admin.merchant_manage.service.ServiceMerchantService;
 import top.xym.web.rag.utils.AliOssUtil;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/serviceMerchant")
@@ -96,5 +98,26 @@ public class ServiceMerchantController {
     public ResultVo<?> updateStatus(@RequestBody StatusUpdateDto request) {
         serviceMerchantService.updateStatus(request.getId(), request.getApplyStatus(), request.getApplyDesc());
         return ResultUtils.success("更新成功");
+    }
+
+    @PostMapping("/createPay")
+    @Operation(summary = "创建支付宝沙箱支付订单")
+    public ResultVo<?> createPay(@RequestBody Map<String, String> map) {
+        String packageType = map.get("packageType");
+        String orderNo = map.get("orderNo");
+        return serviceMerchantService.createAlipayQrCode(packageType, orderNo);
+    }
+
+    @PostMapping("/payNotify")
+    @Operation(summary = "支付宝支付成功回调")
+    public String payNotify(HttpServletRequest request) {
+        // 支付成功后支付宝自动调用这里
+        return serviceMerchantService.payNotify(request);
+    }
+
+    @GetMapping("/payStatus/{orderNo}")
+    @Operation(summary = "查询支付状态")
+    public ResultVo<?> getPayStatus(@PathVariable String orderNo) {
+        return serviceMerchantService.getPayStatus(orderNo);
     }
 }

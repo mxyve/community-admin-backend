@@ -86,6 +86,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/rag/chat/rag").permitAll()
                         .requestMatchers("/api/v1/chat/push-to-merchant").permitAll()
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/api/serviceMerchant/createPay").permitAll()
+                        .requestMatchers("/api/serviceMerchant/payNotify").permitAll()
+                        .requestMatchers("/api/serviceMerchant/payStatus/{orderNo}").permitAll()
                         // 放行其他不需要登录的接口
                         .requestMatchers("/doc.html", "/webjars/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         // 其他所有接口都需要登录

@@ -69,6 +69,10 @@ public class ServiceMerchant {
     private String config;
     // 分佣比例
     private BigDecimal profitRatio;
+    // 订单号
+    private String orderNo;
+    // 支付状态 0未支付 1已支付
+    private Integer payStatus;
 
     @TableLogic
     private Integer deleted;
