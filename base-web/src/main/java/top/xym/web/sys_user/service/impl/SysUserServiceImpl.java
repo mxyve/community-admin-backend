@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.xym.web.sys_menu.entity.AssignTreeParm;
@@ -59,6 +60,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional
     @Override
     public void editUser(SysUser sysUser) {
+        // 密码加密
+        if (StringUtils.isNotEmpty(sysUser.getPassword())) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+        }
+
         int i = this.baseMapper.updateById(sysUser);
         // 修改成功后设置用户的角色
         if (i > 0) {

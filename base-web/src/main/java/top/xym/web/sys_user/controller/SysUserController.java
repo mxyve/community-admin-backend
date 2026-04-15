@@ -130,9 +130,13 @@ public class SysUserController {
     @PostMapping("/resetPassword")
     @Operation(summary = "重置密码")
     public ResultVo<?> resetPassword(@RequestBody SysUser sysUser) {
+        // 密码加密
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String newPassword = passwordEncoder.encode("666666");
+
         UpdateWrapper<SysUser> query = new UpdateWrapper<>();
         query.lambda().eq(SysUser::getUserId,sysUser.getUserId())
-                .set(SysUser::getPassword,"666666");
+                .set(SysUser::getPassword, newPassword);
         if (sysUserService.update(query)) {
             return ResultUtils.success("密码重置成功！");
         }
@@ -228,18 +232,25 @@ public class SysUserController {
     @Operation(summary = "修改密码")
     public ResultVo<?> updatePassword(@RequestBody UpdatePasswordParm parm) {
         SysUser user = sysUserService.getById(parm.getUserId());
-        if (!parm.getOldPassword().equals(user.getPassword())){
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        // 比对原密码（加密对比）
+        if (!passwordEncoder.matches(parm.getOldPassword(), user.getPassword())){
             return ResultUtils.error("原密码不正确！");
         }
+
+        // 新密码加密
+        String encodePassword = passwordEncoder.encode(parm.getPassword());
+
         // 更新条件
         UpdateWrapper<SysUser> query = new UpdateWrapper<>();
-        query.lambda().set(SysUser::getPassword,parm.getPassword())
+        query.lambda().set(SysUser::getPassword, encodePassword)
                 .eq(SysUser::getUserId,parm.getUserId());
+
         if(sysUserService.update(query)) {
             return ResultUtils.success("密码修改成功!");
         }
         return ResultUtils.error("密码修改失败！");
-
     }
 
     // 获取用户信息
