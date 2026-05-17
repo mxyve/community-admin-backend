@@ -95,7 +95,8 @@ public class ServiceOrderServiceImpl extends ServiceImpl<ServiceOrderMapper, Ser
 
     @Override
     public ServiceOrder getTenantDetail(Integer id) {
-        return this.getById(id);
+        // 和列表用同一个SQL
+        return orderMapper.selectTenantDetail(id);
     }
 
     // ====================== 订单操作 ======================
@@ -180,6 +181,19 @@ public class ServiceOrderServiceImpl extends ServiceImpl<ServiceOrderMapper, Ser
         if (order == null || order.getStatus() != 7) throw new RuntimeException("非退款中订单");
         order.setStatus(4);
         order.setRefundReason(rejectReason);
+        this.updateById(order);
+    }
+
+    // 撤回
+    @Transactional
+    @Override
+    public void withdrawService(Integer id) {
+        ServiceOrder order = this.getById(id);
+        if (order == null || order.getStatus() != 2) {
+            throw new RuntimeException("只能撤回【服务中】的订单");
+        }
+        // 撤回 → 退回待服务
+        order.setStatus(1);
         this.updateById(order);
     }
 }

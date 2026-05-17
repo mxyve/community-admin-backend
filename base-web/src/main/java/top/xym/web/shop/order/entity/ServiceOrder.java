@@ -124,4 +124,17 @@ public class ServiceOrder {
 
     @TableField(exist = false)
     private String staffName;    // 服务人员姓名
+
+    // 用户信息（关联查询展示）
+    @TableField(exist = false)
+    private String username;
+
+    @TableField(exist = false)
+    private String nickName;
+
+    @TableField(exist = false)
+    private String phone;
+
+    @TableField(exist = false)
+    private String email;
 }

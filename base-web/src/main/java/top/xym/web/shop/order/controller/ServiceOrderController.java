@@ -147,4 +147,11 @@ public class ServiceOrderController {
         orderService.rejectRefund(id, rejectReason);
         return ResultUtils.success("已拒绝退款申请");
     }
+
+    @PostMapping("/withdraw/{id}")
+    @Operation(summary = "撤回服务（服务中 → 待服务）")
+    public ResultVo<?> withdraw(@PathVariable Integer id) {
+        orderService.withdrawService(id);
+        return ResultUtils.success("已撤回服务");
+    }
 }

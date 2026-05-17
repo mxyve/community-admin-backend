@@ -45,4 +45,7 @@ public interface ServiceOrderService extends IService<ServiceOrder> {
 
     // 拒绝退款
     void rejectRefund(Integer id, String rejectReason);
+
+    // 撤回服务
+    void withdrawService(Integer id);
 }

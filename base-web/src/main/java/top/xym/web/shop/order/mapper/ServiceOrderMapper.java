@@ -13,4 +13,6 @@ public interface ServiceOrderMapper extends BaseMapper<ServiceOrder> {
 
     IPage<ServiceOrder> selectPageVo(Page<ServiceOrder> page, @Param("ew") QueryWrapper<ServiceOrder> queryWrapper);
 
+    // 详情联表查询
+    ServiceOrder selectTenantDetail(@Param("id") Integer id);
 }
