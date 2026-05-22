@@ -38,5 +38,23 @@
         WHERE o.id = #{id}
     </select>
 
+    <!-- 1. 已完成总金额 status=4 -->
+    <select id="getTotalCompletedAmount" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(pay_amount), 0)
+        FROM service_orders
+        WHERE merchant_id = #{merchantId}
+          AND deleted = 0
+          AND status = 4
+    </select>
+
+    <!-- 2. 已退款总金额 status=8 -->
+    <select id="getTotalRefundedAmount" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(pay_amount), 0)
+        FROM service_orders
+        WHERE merchant_id = #{merchantId}
+          AND deleted = 0
+          AND status = 8
+    </select>
+
 
 </mapper>
